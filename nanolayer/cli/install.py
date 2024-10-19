@@ -149,6 +149,7 @@ def install_gh_release_binary(
     filter_assets_by_platform: bool = True,
     filter_assets_by_misc: bool = True,
     filter_assets_by_bitness: bool = True,
+    prerelease: bool = False,
 ) -> None:
     if binary_names == "":
         raise typer.BadParameter("binary names cannot be empty string")
@@ -167,4 +168,5 @@ def install_gh_release_binary(
         filter_assets_by_platform=filter_assets_by_platform,
         filter_assets_by_misc=filter_assets_by_misc,
         filter_assets_by_bitness=filter_assets_by_bitness,
+        prerelease=prerelease,
     )

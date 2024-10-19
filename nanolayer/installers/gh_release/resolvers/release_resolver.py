@@ -71,13 +71,13 @@ class ReleaseResolver:
 
     @classmethod
     def get_latest_release_tag(
-        cls, repo: str, release_tag_regex: Optional[str] = None
+        cls, repo: str, release_tag_regex: Optional[str] = None, prerelease: bool = False
     ) -> str:
         response = urllib.request.urlopen(
             f"https://api.github.com/repos/{repo}/releases"
         )  # nosec
         release_dicts = json.loads(response.read())
-        release_tags = [release_dict["tag_name"] for release_dict in release_dicts]
+        release_tags = [release_dict["tag_name"] for release_dict in release_dicts if release_dict["prerelease"] == prerelease]
         if release_tag_regex is not None:
             release_tags = cls._filter_tags_by_regex(release_tags, release_tag_regex)
         return natsorted(release_tags)[-1]
@@ -93,10 +93,11 @@ class ReleaseResolver:
         repo: str,
         release_tag_regex: Optional[str] = None,
         use_github_api: bool = False,
+        prerelease: bool = False,
     ) -> str:
         if asked_version == "latest":
             if use_github_api or not cls._git_exists():
-                return cls.get_latest_release_tag(repo, release_tag_regex)
+                return cls.get_latest_release_tag(repo, release_tag_regex, prerelease)
             else:
                 return cls.get_latest_git_version_tag(repo, release_tag_regex)
 
